@@ -37,12 +37,14 @@ class Visualizer:
         plt.show()
 
     def plot_predictions(self):
-        """Plot the final weighted prediction over time."""
-        plt.plot(self.results.prediction_history, label="Final Weighted Prediction")
-        plt.axhline(y=1, color='r', linestyle='--', label="True Outcome")
+        """Plot how confident the algorithm is over time."""
+        max_probabilities = [max(pred.values()) for pred in self.results.prediction_history]
+
+        plt.plot(max_probabilities, label="Maximum Probability Assigned")
         plt.xlabel("Rounds")
-        plt.ylabel("Prediction Probability")
-        plt.title("Final Weighted Prediction Over Time")
+        plt.ylabel("Confidence Level")
+        plt.title("Prediction Certainty Over Time")
+        plt.ylim(0, 1)  # Since probabilities are between 0 and 1
         plt.legend()
         plt.show()
 

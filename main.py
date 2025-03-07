@@ -3,9 +3,6 @@ from update_weights import WeightUpdater
 from visualize import Results, Visualizer
 from config import CONFIG
 
-def brier_score(prediction, outcome):
-    """Computes the Brier score: lower is better."""
-    return (prediction - outcome) ** 2
 
 def run_game(num_rounds=10):
     expert_config = CONFIG["experts"]
@@ -16,7 +13,6 @@ def run_game(num_rounds=10):
         experts.append(Expert(e["name"], e["description"], e["accuracy"]))
 
     num_rounds = CONFIG["num_rounds"]
-    omega_size = CONFIG["omega_size"]
 
     weight_updater = WeightUpdater(experts)
     results = Results()
@@ -28,7 +24,7 @@ def run_game(num_rounds=10):
         scores = {name: (pred - true_outcome) ** 2 for name, pred in expert_predictions.items()}
 
         weight_updater.update(scores)
-        final_prediction = weight_updater.get_weighted_prediction(expert_predictions)
+        final_prediction = weight_updater.get_optimal_predictions(scores)
 
         results.log(weight_updater.weights, final_prediction, scores)
 
