@@ -1,15 +1,17 @@
 from typing import Dict, List
+from experts import Expert
 import numpy as np
 
 ExpertName = str
+Experts = List[Expert]
 ProbabilityDistribution = List[float]
 Predictions = Dict[ExpertName, ProbabilityDistribution]
 
 class ExpertPerformanceTracker:
-    def __init__(self, experts: List[ExpertName], total_outcomes: int):
-        self.experts: List[ExpertName] = experts
-        self.weights: Dict[ExpertName, float] = {e: 1.0 for e in experts}
-        self.losses: Dict[ExpertName, float] = {e: 0.0 for e in experts}
+    def __init__(self, experts: Experts, total_outcomes: int):
+        self.experts: Experts = experts
+        self.weights: Dict[ExpertName, float] = {e.name: 1.0 for e in experts}
+        self.losses: Dict[ExpertName, float] = {e.name: 0.0 for e in experts}
         self.system_loss: float = 0.0
         self.outcome_space: List[int] = list(range(1, total_outcomes+ 1))
 

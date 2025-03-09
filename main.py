@@ -6,7 +6,7 @@ from config import CONFIG
 
 def run_experiment():
     expert_settings       = CONFIG["experts"]
-    total_rounds          = CONFIG["num_rounds"]
+    total_rounds          = CONFIG["total_rounds"]
     total_outcomes        = CONFIG["total_outcomes"]
     
     experts = []

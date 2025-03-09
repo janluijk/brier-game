@@ -1,7 +1,7 @@
 CONFIG = {
 
     "experts": [
-        {"type": "RandomExpert", "name": "0th"},
+        # {"type": "RandomExpert", "name": "0th"},
         {"type": "BaisedExpert", "name": "1st", "bias": 0.1},
         {"type": "BaisedExpert", "name": "2nd", "bias": 0.2},
         {"type": "BaisedExpert", "name": "3rd", "bias": 0.3},
@@ -14,7 +14,7 @@ CONFIG = {
         {"type": "BaisedExpert", "name": "10th", "bias": 1.0},
     ],
 
-    "total_outcomes": 3,
+    "total_outcomes": 5,
 
     "total_rounds": 10,
 

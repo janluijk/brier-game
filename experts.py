@@ -1,9 +1,9 @@
 import numpy as np
 
 class Expert:
-    def __init__(self, name, outcome_space_size=2):
+    def __init__(self, name, total_outcomes):
         self.name = name
-        self.outcome_space = list(range(1, outcome_space_size + 1))
+        self.outcome_space = list(range(1, total_outcomes + 1))
 
     def predict(self):
         raise NotImplementedError("Subclasses implement the predit method")
@@ -20,12 +20,12 @@ class BiasedExpert(Expert):
     """
     Expert with a bias towards the true outcome
     """
-    def __init__(self, name, bias_strength, outcome_space=2):
+    def __init__(self, name, bias_strength, outcome_space):
         super().__init__(name, outcome_space)
         self.bias_strength = bias_strength
 
     def predict(self):
-        outcome_space_size = len(self.outcome_space)
-        probabilities = np.full(outcome_space_size, (1 - self.bias_strength) / (outcome_space_size - 1))
+        total_outcomes = len(self.outcome_space)
+        probabilities = np.full(total_outcomes, (1 - self.bias_strength) / (total_outcomes - 1))
         probabilities[0] = self.bias_strength
         return probabilities
