@@ -1,26 +1,31 @@
-import random
+import numpy as np
 
 class Expert:
-    def __init__(self, name, description, accuracy=0.5):
-        self.weight = 1.0
+    def __init__(self, name, outcome_space_size=2):
         self.name = name
-        self.description = description
-        self.accuracy = accuracy
-
-    def calculate_bounds(self):
-        """
-        Calculates the lower and upper bounds for accuracy.
-
-        The accuracy 'a' determines the prediction range as follows:
-        - a = 0: always returns 0 (worst case).
-        - a = 0.5: returns a random value between 0 and 1 (random case).
-        - a = 1: always returns 1 (best case).
-        """
-
-        lower_bound = max(2 * self.accuracy - 1, 0)
-        upper_bound = min(2 * self.accuracy, 1)
-        return lower_bound, upper_bound
+        self.outcome_space = list(range(1, outcome_space_size + 1))
 
     def predict(self):
-        lower_bound, upper_bound = self.calculate_bounds()
-        return random.uniform(lower_bound, upper_bound)
+        raise NotImplementedError("Subclasses implement the predit method")
+
+class RandomExpert(Expert):
+    """
+    Expert with uniform probability distribution 
+    """
+    def predict(self):
+        probabilities = np.array([np.random.rand() for _ in self.outcome_space])
+        return probabilities / np.sum(probabilities)
+
+class BiasedExpert(Expert):
+    """
+    Expert with a bias towards the true outcome
+    """
+    def __init__(self, name, bias_strength, outcome_space=2):
+        super().__init__(name, outcome_space)
+        self.bias_strength = bias_strength
+
+    def predict(self):
+        outcome_space_size = len(self.outcome_space)
+        probabilities = np.full(outcome_space_size, (1 - self.bias_strength) / (outcome_space_size - 1))
+        probabilities[0] = self.bias_strength
+        return probabilities

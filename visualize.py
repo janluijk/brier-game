@@ -1,14 +1,13 @@
 import matplotlib.pyplot as plt
+from scipy.optimize import fsolve
 
 class Results:
     def __init__(self):
-        """Initialize storage for tracking simulation data."""
-        self.weights_history = [] # Stores weights over time
-        self.prediction_history = [] # Stores final weighted predictions
-        self.brier_scores = {} # {expert_name: list of scores}
+        self.weights_history = [] 
+        self.prediction_history = [] 
+        self.brier_scores = {} 
 
     def log(self, weights, prediciton, scores):
-        """Store results from a single round"""
         self.weights_history.append(weights.copy())
         self.prediction_history.append(prediciton)
 
@@ -21,9 +20,7 @@ class Visualizer:
     def __init__(self, results: Results):
         self.results = results 
 
-
     def plot_weights(self):
-        """Plot how expert weights evolve over time."""
         for expert_name in self.results.weights_history[0].keys():
             plt.plot(
                     [w[expert_name] for w in self.results.weights_history],
@@ -37,19 +34,17 @@ class Visualizer:
         plt.show()
 
     def plot_predictions(self):
-        """Plot how confident the algorithm is over time."""
         max_probabilities = [max(pred.values()) for pred in self.results.prediction_history]
 
         plt.plot(max_probabilities, label="Maximum Probability Assigned")
         plt.xlabel("Rounds")
         plt.ylabel("Confidence Level")
         plt.title("Prediction Certainty Over Time")
-        plt.ylim(0, 1)  # Since probabilities are between 0 and 1
+        plt.ylim(0, 1)
         plt.legend()
         plt.show()
 
     def plot_brier_scores(self):
-        """Plot expert Brier scores over time."""
         for expert_name, scores in self.results.brier_scores.items():
             plt.plot(scores, label=expert_name)
         plt.xlabel("Rounds")

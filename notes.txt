@@ -1,8 +1,0 @@
-skeleton:
-- config.py - all parameters
-- main.py - runs simulation
-- visuals.py - handles visualisationA
-- results/
-
-## Omega = 1?
-

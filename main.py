@@ -1,38 +1,36 @@
-from experts import Expert
-from update_weights import WeightUpdater
+from experts import RandomExpert, BiasedExpert
+from weights import WeightManager 
+from predictions import PredictionOptimizer
 from visualize import Results, Visualizer
 from config import CONFIG
 
-
-def run_game(num_rounds=10):
-    expert_config = CONFIG["experts"]
-
+def run_experiment():
+    expert_settings       = CONFIG["experts"]
+    total_rounds          = CONFIG["num_rounds"]
+    total_outcomes        = CONFIG["total_outcomes"]
+    
     experts = []
+    for e in expert_settings:
+        if e.get("bias") is not None:
+            experts.append(BiasedExpert(e["name"], e["bias"], total_outcomes))
+        else:
+            experts.append(RandomExpert(e["name"], total_outcomes))
 
-    for e in expert_config:
-        experts.append(Expert(e["name"], e["description"], e["accuracy"]))
+    weight_manager = WeightManager(experts, total_outcomes)
+    experiment_results = Results()
+    prediction_optimizer = PredictionOptimizer(weight_manager)
 
-    num_rounds = CONFIG["num_rounds"]
+    for _ in range(total_rounds):
+        expert_forecast = {expert.name: expert.predict() for expert in experts}
+        system_prediction = prediction_optimizer.get_optimal_predictions(expert_forecast)
 
-    weight_updater = WeightUpdater(experts)
-    results = Results()
+        weight_manager.update_weights(expert_forecast)
 
-    for _ in range(num_rounds):
-        expert_predictions = {e.name: e.predict() for e in experts}
-        true_outcome = 1
+        scores = {"name": 2}
+        experiment_results.log(weight_manager.weights, system_prediction, scores)
 
-        scores = {name: (pred - true_outcome) ** 2 for name, pred in expert_predictions.items()}
-
-        weight_updater.update(scores)
-        final_prediction = weight_updater.get_optimal_predictions(scores)
-
-        results.log(weight_updater.weights, final_prediction, scores)
-
-    visualizer = Visualizer(results)
-
+    visualizer = Visualizer(experiment_results)
     visualizer.plot_weights()
-    visualizer.plot_predictions()
-    visualizer.plot_brier_scores()
 
 if __name__ == "__main__":
-    run_game()
+    run_experiment()
