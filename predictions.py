@@ -1,14 +1,15 @@
-from weights import WeightManager
+from expert_performance import ExpertPerformanceTracker
 import numpy as np 
+from scipy.optimize import fsolve
 
 class PredictionOptimizer:
-    def __init__(self, weight_manager: WeightManager):
-        self.weight_manager = weight_manager
-        self.outcome_space = self.weight_manager.outcome_space
+    def __init__(self, expert_manager: ExpertPerformanceTracker):
+        self.expert_manager = expert_manager 
+        self.outcome_space = self.expert_manager.outcome_space
 
     def log_weighted_loss(self, outcome, expert_predictions):
-        weights = self.weight_manager.weights
-        brier_score = self.weight_manager.brier_score
+        weights = self.expert_manager.weights
+        brier_score = self.expert_manager.brier_score
 
         total_weighted_loss = sum(
             weights[expert] * np.exp(-brier_score(outcome, predictions))
