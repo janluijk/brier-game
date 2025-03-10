@@ -25,12 +25,22 @@ def run_experiment():
         system_prediction = prediction_optimizer.get_optimal_predictions(expert_predictions)
 
         expert_manager.update_weights(expert_predictions)
+        expert_manager.update_expert_losses(expert_predictions)
+        expert_manager.update_system_loss(system_prediction)
 
-        scores = {"name": 2}
-        experiment_results.log(expert_manager.weights, system_prediction, scores)
+        experiment_results.log(expert_manager.weights, expert_predictions, expert_manager.losses, expert_manager.system_loss)
+        # weights, loss, system_loss, expert_predictions, system_prediction, 
 
     visualizer = Visualizer(experiment_results)
-    visualizer.plot_weights()
+
+    if CONFIG["visualization"]["plot_weights"]:
+        visualizer.plot_weights()
+    if CONFIG["visualization"]["plot_optimal_loss"]:
+        visualizer.plot_theoretical_minimal_loss()
+    if CONFIG["visualization"]["plot_losses"]:
+        visualizer.plot_losses()
+    if CONFIG["visualization"]["plot_predictions"]:
+        visualizer.plot_predictions()
 
 if __name__ == "__main__":
     run_experiment()

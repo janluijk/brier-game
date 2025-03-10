@@ -1,20 +1,19 @@
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
+import numpy as np
 
 class Results:
     def __init__(self):
-        self.weights_history = [] 
-        self.prediction_history = [] 
-        self.brier_scores = {} 
+        self.weights_history = []  
+        self.losses_history = []  
+        self.system_loss_history = []  
+        self.prediction_history = []  
 
-    def log(self, weights, prediciton, scores):
-        self.weights_history.append(weights.copy())
-        self.prediction_history.append(prediciton)
-
-        for name, score in scores.items():
-            if name not in self.brier_scores:
-                self.brier_scores[name] = []
-            self.brier_scores[name].append(score)
+    def log(self, weights, expert_predictions, expert_losses, system_loss):
+        self.weights_history.append({expert: weight for expert, weight in weights.items()})
+        self.losses_history.append({expert: loss for expert, loss in expert_losses.items()})
+        self.system_loss_history.append(system_loss)
+        self.prediction_history.append(expert_predictions)
 
 class Visualizer:
     def __init__(self, results: Results):
@@ -33,24 +32,52 @@ class Visualizer:
         plt.legend()
         plt.show()
 
+    def plot_losses(self):
+        for expert_name in self.results.weights_history[0].keys():
+            plt.plot(
+                [loss[expert_name] for loss in self.results.losses_history],
+                label=f"Loss of {expert_name}"
+            )
+
+        plt.plot(self.results.system_loss_history, label="System Loss", linestyle="--", color="black")
+
+        plt.xlabel("Rounds")
+        plt.ylabel("Loss")
+        plt.title("Expert and System Loss Over Time")
+        plt.legend()
+        plt.show()
+
     def plot_predictions(self):
-        max_probabilities = [max(pred.values()) for pred in self.results.prediction_history]
+        expert_names = list(self.results.prediction_history[0].keys())  # Get expert names
+        total_experts = len(expert_names)
+        outcomes = len(next(iter(self.results.prediction_history[0].values())))  # Get number of outcomes
+        num_subplots = 4
 
-        plt.plot(max_probabilities, label="Maximum Probability Assigned")
-        plt.xlabel("Rounds")
-        plt.ylabel("Confidence Level")
-        plt.title("Prediction Certainty Over Time")
-        plt.ylim(0, 1)
-        plt.legend()
-        plt.show()
+        cumulative_predictions = {expert: np.zeros(outcomes) for expert in expert_names}
+        for round_predictions in self.results.prediction_history:
+            for expert, predictions in round_predictions.items():
+                cumulative_predictions[expert] += predictions  # Sum probabilities over rounds
 
-    def plot_brier_scores(self):
-        for expert_name, scores in self.results.brier_scores.items():
-            plt.plot(scores, label=expert_name)
-        plt.xlabel("Rounds")
-        plt.ylabel("Brier score")
-        plt.title("Expert Brier Scores Over Time")
-        plt.legend()
-        plt.show()
+        rows = 2 
+        cols = 2 
+
+        for start_expert in range(0, total_experts, num_subplots):
+            fig, axes = plt.subplots(rows, cols, figsize=(12, 6))
+            axes = axes.flatten() if num_subplots > 1 else [axes]
+
+            for i, expert in enumerate(expert_names[start_expert:start_expert + num_subplots]):
+                ax = axes[i]
+                ax.bar(range(1, outcomes + 1), cumulative_predictions[expert], alpha=0.7)
+                ax.set_title(f"Predictions of {expert}")
+                ax.set_xlabel("Outcome")
+                ax.set_ylabel("Cumulative Probability")
+
+            plt.tight_layout()
+            plt.show()
 
 
+    def plot_theoretical_minimal_loss(self):
+        total_experts = len(self.results.prediction_history[0].keys())
+        optimal_loss = np.log(total_experts)
+
+        plt.axhline(optimal_loss, color="red", linestyle="dashed", label=f"Optimal Min Loss (LogK)")
