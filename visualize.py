@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from scipy.optimize import fsolve
 import numpy as np
 
 class Results:
@@ -48,26 +47,26 @@ class Visualizer:
         plt.show()
 
     def plot_predictions(self):
-        expert_names = list(self.results.prediction_history[0].keys())  # Get expert names
+        expert_names = list(self.results.prediction_history[0].keys())
         total_experts = len(expert_names)
-        outcomes = len(next(iter(self.results.prediction_history[0].values())))  # Get number of outcomes
+        outcomes = len(next(iter(self.results.prediction_history[0].values())))  
         num_subplots = 4
 
         cumulative_predictions = {expert: np.zeros(outcomes) for expert in expert_names}
         for round_predictions in self.results.prediction_history:
             for expert, predictions in round_predictions.items():
-                cumulative_predictions[expert] += predictions  # Sum probabilities over rounds
+                cumulative_predictions[expert] += predictions
 
         rows = 2 
         cols = 2 
 
         for start_expert in range(0, total_experts, num_subplots):
-            fig, axes = plt.subplots(rows, cols, figsize=(12, 6))
+            fig, axes = plt.subplots(rows, cols)
             axes = axes.flatten() if num_subplots > 1 else [axes]
 
             for i, expert in enumerate(expert_names[start_expert:start_expert + num_subplots]):
                 ax = axes[i]
-                ax.bar(range(1, outcomes + 1), cumulative_predictions[expert], alpha=0.7)
+                ax.bar(range(1, outcomes + 1), cumulative_predictions[expert])
                 ax.set_title(f"Predictions of {expert}")
                 ax.set_xlabel("Outcome")
                 ax.set_ylabel("Cumulative Probability")
@@ -80,4 +79,4 @@ class Visualizer:
         total_experts = len(self.results.prediction_history[0].keys())
         optimal_loss = np.log(total_experts)
 
-        plt.axhline(optimal_loss, color="red", linestyle="dashed", label=f"Optimal Min Loss (LogK)")
+        plt.axhline(optimal_loss, color="red", linestyle="--", label=f"Optimal Min Loss (LogK={np.log(total_experts):.3f})")

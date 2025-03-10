@@ -6,7 +6,7 @@ class Expert:
         self.outcome_space = list(range(1, total_outcomes + 1))
 
     def predict(self):
-        raise NotImplementedError("Subclasses implement the predit method")
+        raise NotImplementedError("Subclasses implement the predict method")
 
 class RandomExpert(Expert):
     """

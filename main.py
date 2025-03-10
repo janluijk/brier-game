@@ -29,7 +29,6 @@ def run_experiment():
         expert_manager.update_system_loss(system_prediction)
 
         experiment_results.log(expert_manager.weights, expert_predictions, expert_manager.losses, expert_manager.system_loss)
-        # weights, loss, system_loss, expert_predictions, system_prediction, 
 
     visualizer = Visualizer(experiment_results)
 

@@ -18,10 +18,10 @@ CONFIG = {
 
     "total_rounds": 10,
 
-    "visualisation": {
+    "visualization": {
         "plot_weights": True,
         "plot_losses": True,
         "plot_optimal_loss": True,
-        "plot_predictions": False,
+        "plot_predictions": True,
     }
 }
