@@ -1,27 +1,30 @@
 CONFIG = {
 
     "experts": [
-        {"type": "RandomExpert", "name": "0th"},
-        {"type": "BaisedExpert", "name": "1st", "bias": 0.1},
-        {"type": "BaisedExpert", "name": "2nd", "bias": 0.2},
-        {"type": "BaisedExpert", "name": "3rd", "bias": 0.3},
-        {"type": "BaisedExpert", "name": "4th", "bias": 0.4},
-        {"type": "BaisedExpert", "name": "5th", "bias": 0.5},
-        {"type": "BaisedExpert", "name": "6th", "bias": 0.6},
-        {"type": "BaisedExpert", "name": "7th", "bias": 0.7},
-        {"type": "BaisedExpert", "name": "8th", "bias": 0.8},
-        {"type": "BaisedExpert", "name": "9th", "bias": 0.9},
-        {"type": "BaisedExpert", "name": "10th", "bias": 1.0},
+        {"name": "Random", "bias": 0.2}, # a bias of (1.0 / total_outcomes) results in a random distribution
+
+        {"name": "Expert1", "bias": 0.1},
+        {"name": "Expert2", "bias": 0.3},
+        {"name": "Expert3", "bias": 0.5},
+        {"name": "Expert4", "bias": 0.7},
+        {"name": "Expert5", "bias": 0.9},
     ],
 
-    "total_outcomes": 50,
+    "probability_shifts": [
+        { "round": 15, "expert": "Expert1", "bias": 0.6},
+        { "round": 15, "expert": "Expert1", "bias": 0.6},
+        { "round": 15, "expert": "Expert1", "bias": 0.6}
+    ],
 
-    "total_rounds": 10,
+    "total_outcomes": 5,
+
+    "total_rounds": 30,
 
     "visualization": {
         "plot_weights": True,
         "plot_losses": True,
         "plot_optimal_loss": True,
         "plot_predictions": True,
+        "plot_user_predictions": True
     }
 }
