@@ -5,7 +5,8 @@
 - Git
 
 ## Installation
-Clone the repo: `git clone https://github.com/janluijk/brier-game.git`
+Clone the repo: `git clone https://github.com/janluijk/brier-game.git`.
+
 Install the required libraries: `pip install -r requirements.txt`
 
 ## Running the program
