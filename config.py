@@ -24,7 +24,6 @@ CONFIG = {
         "plot_losses": True,
         "plot_optimal_regret": True,
         "plot_regret": True,
-        "plot_optimal_loss": True,
         "plot_predictions": False,
         "plot_user_predictions": True
     }
