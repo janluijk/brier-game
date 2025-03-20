@@ -29,3 +29,6 @@ class BiasedExpert(Expert):
         probabilities = np.full(total_outcomes, (1 - self.bias_strength) / (total_outcomes - 1))
         probabilities[0] = self.bias_strength
         return probabilities
+
+    def update_probabilities(self, new_bias):
+        self.bias_strength = new_bias

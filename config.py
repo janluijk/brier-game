@@ -11,9 +11,8 @@ CONFIG = {
     ],
 
     "probability_shifts": [
-        { "round": 15, "expert": "Expert1", "bias": 0.6},
-        { "round": 15, "expert": "Expert1", "bias": 0.6},
-        { "round": 15, "expert": "Expert1", "bias": 0.6}
+        { "round": 15, "expert": "Expert1", "bias": 0.9},
+        { "round": 15, "expert": "Expert5", "bias": 0.1},
     ],
 
     "total_outcomes": 5,
@@ -23,8 +22,10 @@ CONFIG = {
     "visualization": {
         "plot_weights": True,
         "plot_losses": True,
+        "plot_optimal_regret": True,
+        "plot_regret": True,
         "plot_optimal_loss": True,
-        "plot_predictions": True,
+        "plot_predictions": False,
         "plot_user_predictions": True
     }
 }

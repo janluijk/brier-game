@@ -7,12 +7,16 @@ class Results:
         self.losses_history = []  
         self.system_loss_history = []  
         self.prediction_history = []  
+        self.system_prediction_history = []
+        self.regret_history = []
 
-    def log(self, weights, expert_predictions, expert_losses, system_loss):
+    def log(self, weights, expert_predictions, expert_losses, system_loss, system_prediction, regret):
         self.weights_history.append({expert: weight for expert, weight in weights.items()})
         self.losses_history.append({expert: loss for expert, loss in expert_losses.items()})
         self.system_loss_history.append(system_loss)
         self.prediction_history.append(expert_predictions)
+        self.system_prediction_history.append(system_prediction)
+        self.regret_history.append(regret)
 
 class Visualizer:
     def __init__(self, results: Results):
@@ -75,8 +79,32 @@ class Visualizer:
             plt.show()
 
 
-    def plot_theoretical_minimal_loss(self):
+    def plot_theoretical_minimal_regret(self):
         total_experts = len(self.results.prediction_history[0].keys())
-        optimal_loss = np.log(total_experts)
+        optimal_regret = np.log(total_experts)
 
-        plt.axhline(optimal_loss, color="red", linestyle="--", label=f"Optimal Min Loss (LogK={np.log(total_experts):.3f})")
+        plt.axhline(optimal_regret, color="red", linestyle="--", label=f"Optimal Min Loss (LogK={np.log(total_experts):.3f})")
+
+    def plot_regret(self):
+        plt.plot(self.results.regret_history, label="Regret", linestyle="--", color="black")
+
+        plt.xlabel("Rounds")
+        plt.ylabel("Regret")
+        plt.title("Regret Over Time")
+        plt.legend()
+        plt.show()
+
+    def plot_user_predictions(self):
+        total_outcomes = len(self.results.system_prediction_history[0])
+        outcome_counts = np.zeros(total_outcomes) 
+
+        for predictions in self.results.system_prediction_history:
+            outcome_counts += predictions
+
+        outcome_counts /= np.sum(outcome_counts)
+
+        plt.bar(range(1, total_outcomes + 1), outcome_counts)
+        plt.xlabel("Predicted Outcome")
+        plt.ylabel("Cumulative Probability")
+        plt.title("System's cumulative Predictions")
+        plt.show()

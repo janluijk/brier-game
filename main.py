@@ -27,21 +27,31 @@ def run_experiment():
         for expert in experts:
             apply_probability_shifts(expert, round_num)
 
+
         expert_predictions = {expert.name: expert.predict() for expert in experts}
         system_prediction = prediction_optimizer.get_optimal_predictions(expert_predictions)
+
+        
+        weights = expert_manager.weights
+        losses = expert_manager.losses
+        system_loss = expert_manager.system_loss
+        regret = expert_manager.regret
+
+        experiment_results.log(weights, expert_predictions, losses, system_loss, system_prediction, regret)
 
         expert_manager.update_weights(expert_predictions)
         expert_manager.update_expert_losses(expert_predictions)
         expert_manager.update_system_loss(system_prediction)
-
-        experiment_results.log(expert_manager.weights, expert_predictions, expert_manager.losses, expert_manager.system_loss, system_prediction)
+        expert_manager.update_regret()
 
     visualizer = Visualizer(experiment_results)
 
     if CONFIG["visualization"]["plot_weights"]:
         visualizer.plot_weights()
-    if CONFIG["visualization"]["plot_optimal_loss"]:
-        visualizer.plot_theoretical_minimal_loss()
+    if CONFIG["visualization"]["plot_optimal_regret"]:
+        visualizer.plot_theoretical_minimal_regret()
+    if CONFIG["visualization"]["plot_regret"]:
+        visualizer.plot_regret()
     if CONFIG["visualization"]["plot_losses"]:
         visualizer.plot_losses()
     if CONFIG["visualization"]["plot_predictions"]:

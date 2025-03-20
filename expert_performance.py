@@ -13,6 +13,7 @@ class ExpertPerformanceTracker:
         self.weights: Dict[ExpertName, float] = {e.name: 1.0 for e in experts}
         self.losses: Dict[ExpertName, float] = {e.name: 0.0 for e in experts}
         self.system_loss: float = 0.0
+        self.regret: float = 0.0
         self.outcome_space: List[int] = list(range(1, total_outcomes+ 1))
 
     def brier_score(self, outcome: int, predictions: ProbabilityDistribution) -> float:
@@ -37,3 +38,8 @@ class ExpertPerformanceTracker:
     def update_system_loss(self, system_predictions: ProbabilityDistribution) -> None:
         score = self.brier_score(1, system_predictions)
         self.system_loss += score
+
+    def update_regret(self) -> None:
+        min_expert = min(self.losses, key=lambda k: self.losses[k])
+        self.regret = self.system_loss - self.losses[min_expert]
+
