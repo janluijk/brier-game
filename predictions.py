@@ -1,6 +1,6 @@
 from expert_performance import ExpertPerformanceTracker, ProbabilityDistribution
 import numpy as np 
-from scipy.optimize import fsolve
+from scipy.optimize import root_scalar
 from typing import Dict, List
 
 ExpertName = str
@@ -30,9 +30,13 @@ class PredictionOptimizer:
                 for outcome in self.outcome_space
             ) - 2
 
-        solution = fsolve(loss_equation, x0=1.0)[0]
+        solution = root_scalar(loss_equation, method="brentq", bracket=(0, 10))        
+
+        if not solution.converged:
+            raise ValueError("Root finding did not converge.")
+
 
         return [
-            max(solution - self.log_weighted_loss(outcome, expert_predictions), 0.0) * 0.5 
+            max(solution.root - self.log_weighted_loss(outcome, expert_predictions), 0.0) * 0.5
             for outcome in self.outcome_space
         ]
