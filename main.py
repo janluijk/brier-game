@@ -31,17 +31,16 @@ def run_experiment():
         expert_predictions = {expert.name: expert.predict() for expert in experts}
         system_prediction = prediction_optimizer.get_optimal_predictions(expert_predictions)
 
-        
         weights = expert_manager.weights
         losses = expert_manager.losses
         system_loss = expert_manager.system_loss
         regret = expert_manager.regret
-
         experiment_results.log(weights, expert_predictions, losses, system_loss, system_prediction, regret)
 
-        expert_manager.update_weights(expert_predictions)
-        expert_manager.update_expert_losses(expert_predictions)
         expert_manager.update_system_loss(system_prediction)
+        expert_manager.update_expert_losses(expert_predictions)
+        expert_manager.update_weights(expert_predictions)
+
         expert_manager.update_regret()
 
     visualizer = Visualizer(experiment_results)
