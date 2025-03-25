@@ -10,7 +10,7 @@ Predictions = Dict[ExpertName, ProbabilityDistribution]
 class ExpertPerformanceTracker:
     def __init__(self, experts: Experts, total_outcomes: int):
         self.experts: Experts = experts
-        self.weights: Dict[ExpertName, float] = {e.name: 1.0 for e in experts}
+        self.weights: Dict[ExpertName, float] = {e.name: 1.0 / len(experts) for e in experts}
         self.losses: Dict[ExpertName, float] = {e.name: 0.0 for e in experts}
         self.system_loss: float = 0.0
         self.regret: float = 0.0
